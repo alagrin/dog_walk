@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="en" data-bs-theme="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dog Walk Tracker</title>
+    <link rel="stylesheet" href="https://cdn.replit.com/agent/bootstrap-agent-dark-theme.min.css">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}">
+</head>
+<body>
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+        <div class="container">
+            <a class="navbar-brand" href="/">Dog Walk Tracker</a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav">
+                    <li class="nav-item">
+                        <a class="nav-link active" aria-current="page" href="/">Add Walk</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="/walks">View Walks</a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <div class="container mt-4">
+        <h1>Record a Dog Walk</h1>
+        
+        <!-- Display flash messages -->
+        {% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}
+                {% for category, message in messages %}
+                    <div class="alert alert-{{ category }} alert-dismissible fade show" role="alert">
+                        {{ message }}
+                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                    </div>
+                {% endfor %}
+            {% endif %}
+        {% endwith %}
+        
+        <div class="card mt-4">
+            <div class="card-body">
+                <h5 class="card-title">New Walk Details</h5>
+                <form action="/api/walks" method="POST">
+                    <div class="mb-3">
+                        <label for="dog_name" class="form-label">Dog Name</label>
+                        <input type="text" class="form-control" id="dog_name" name="dog_name" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="duration" class="form-label">Duration (minutes)</label>
+                        <input type="number" class="form-control" id="duration" name="duration" min="1" step="0.1" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="distance" class="form-label">Distance (miles/km)</label>
+                        <input type="number" class="form-control" id="distance" name="distance" min="0" step="0.01" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="notes" class="form-label">Notes</label>
+                        <textarea class="form-control" id="notes" name="notes" rows="3"></textarea>
+                    </div>
+                    <button type="submit" class="btn btn-primary">Record Walk</button>
+                </form>
+            </div>
+        </div>
+
+        <div class="card mt-4">
+            <div class="card-body">
+                <h5 class="card-title">API Documentation</h5>
+                <p>You can also use the following API endpoints directly:</p>
+                <ul>
+                    <li><code>POST /api/walks</code> - Add a new dog walk</li>
+                    <li><code>GET /api/walks</code> - Get all dog walks</li>
+                    <li><code>GET /api/walks/{id}</code> - Get a specific dog walk</li>
+                    <li><code>GET /api/quick-add</code> - Add a sample dog walk (no parameters needed)</li>
+                </ul>
+                <h6>Example POST request:</h6>
+                <pre class="bg-dark text-light p-3 rounded">
+fetch('/api/walks', {
+    method: 'POST',
+    headers: {
+        'Content-Type': 'application/json',
+    },
+    body: JSON.stringify({
+        dog_name: 'Buddy',
+        duration: 30,
+        distance: 1.5,
+        notes: 'Morning walk in the park'
+    }),
+})
+.then(response => response.json())
+.then(data => console.log(data));</pre>
+            </div>
+        </div>
+
+        <div class="text-center mt-4">
+            <div class="btn-group">
+                <form action="/api/sample-data" method="POST" class="me-2">
+                    <button type="submit" class="btn btn-secondary">Add Sample Data</button>
+                </form>
+                <a href="/api/quick-add" class="btn btn-info">Quick Add Walk</a>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>
